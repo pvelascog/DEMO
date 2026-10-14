@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TITAN Inventario Visual</title>
-  <meta name="description" content="Demo: inventario de cemento por reconocimiento de imágenes (simulado).">
+  <meta name="description" content="Demo: inventario de cemento y prefabricados de concreto por reconocimiento de imágenes (simulado).">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
     <div class="brand">
       <span class="brand-mark" aria-hidden="true">T</span>
       <div>
-        <strong>Cemento TITAN</strong>
+        <strong>Cementos TITAN</strong>
         <span>Inventario visual</span>
       </div>
       <span class="demo-tag">DEMO · simulación</span>
@@ -38,7 +38,7 @@
       <div class="kpis" id="kpis"></div>
       <div class="grid-2">
         <div class="card">
-          <h2>Stock por producto <small class="muted">toneladas</small></h2>
+          <h2>Stock por familia <small class="muted">toneladas</small></h2>
           <div class="legend">
             <span><i class="sw sw-sys"></i>Sistema</span>
             <span><i class="sw sw-fis"></i>Físico (conteo visual)</span>
@@ -61,7 +61,7 @@
       <div class="section-head">
         <div>
           <h1>Captura y reconocimiento</h1>
-          <p class="muted">Tome o cargue una foto de la zona; el modelo detecta pallets, identifica el producto por su empaque y estima los sacos.</p>
+          <p class="muted">Tome o cargue una foto de la zona (bodega, patio o vista aérea con dron); el modelo detecta las estibas, identifica el producto —cemento ensacado, tubería, bloques o prefabricados— y cuenta las unidades.</p>
         </div>
       </div>
       <div class="capture-layout">
@@ -84,7 +84,7 @@
             <canvas id="cv-overlay" width="1200" height="720"></canvas>
             <div class="scan" id="scan" hidden><div class="scan-line"></div></div>
             <div class="viewer-empty" id="viewer-empty">
-              <p>Seleccione una zona y elija <b>Foto de ejemplo</b>, o suba una imagen propia.</p>
+              <p>Seleccione una zona y elija <b>Foto de ejemplo</b>, o suba una imagen propia.<br><small>Pruebe la zona <b>Patio principal</b> para analizar la foto aérea del patio.</small></p>
             </div>
           </div>
           <div class="viewer-foot">
@@ -120,7 +120,7 @@
           <thead>
             <tr>
               <th>Zona</th><th>Producto</th><th class="num">Sistema</th><th class="num">Físico</th>
-              <th class="num">Diferencia</th><th class="num">Ton.</th><th>Último conteo</th><th>Estado</th><th></th>
+              <th class="num">Diferencia</th><th>Unidad</th><th class="num">Ton.</th><th>Último conteo</th><th>Estado</th><th></th>
             </tr>
           </thead>
           <tbody id="inv-body"></tbody>
