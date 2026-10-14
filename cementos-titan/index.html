@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TITAN Inventario Visual</title>
+  <meta name="description" content="Demo: inventario de cemento por reconocimiento de imágenes (simulado).">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">T</span>
+      <div>
+        <strong>Cemento TITAN</strong>
+        <span>Inventario visual</span>
+      </div>
+      <span class="demo-tag">DEMO · simulación</span>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="panel" aria-selected="true">Panel</button>
+      <button role="tab" data-tab="captura">Captura</button>
+      <button role="tab" data-tab="inventario">Inventario</button>
+      <button role="tab" data-tab="historial">Historial</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- PANEL -->
+    <section id="tab-panel" class="tab-view" role="tabpanel">
+      <div class="section-head">
+        <div>
+          <h1>Panel de inventario</h1>
+          <p class="muted">Stock en sistema (ERP) frente al conteo físico obtenido de fotografías.</p>
+        </div>
+        <button class="btn primary" data-goto="captura">Nueva captura</button>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="grid-2">
+        <div class="card">
+          <h2>Stock por producto <small class="muted">toneladas</small></h2>
+          <div class="legend">
+            <span><i class="sw sw-sys"></i>Sistema</span>
+            <span><i class="sw sw-fis"></i>Físico (conteo visual)</span>
+          </div>
+          <div id="chart-products"></div>
+        </div>
+        <div class="card">
+          <h2>Zonas de almacenamiento</h2>
+          <div id="zones-status"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Alertas</h2>
+        <ul class="alerts" id="alerts"></ul>
+      </div>
+    </section>
+
+    <!-- CAPTURA -->
+    <section id="tab-captura" class="tab-view" role="tabpanel" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Captura y reconocimiento</h1>
+          <p class="muted">Tome o cargue una foto de la zona; el modelo detecta pallets, identifica el producto por su empaque y estima los sacos.</p>
+        </div>
+      </div>
+      <div class="capture-layout">
+        <div class="card">
+          <div class="controls">
+            <label class="field">
+              <span>Zona</span>
+              <select id="zone-select"></select>
+            </label>
+            <div class="btn-row">
+              <button class="btn" id="btn-scene">Foto de ejemplo</button>
+              <label class="btn" for="file-input">Subir foto</label>
+              <label class="btn" for="cam-input">Cámara</label>
+              <input type="file" id="file-input" accept="image/*" hidden>
+              <input type="file" id="cam-input" accept="image/*" capture="environment" hidden>
+            </div>
+          </div>
+          <div class="viewer" id="viewer">
+            <canvas id="cv-base" width="1200" height="720"></canvas>
+            <canvas id="cv-overlay" width="1200" height="720"></canvas>
+            <div class="scan" id="scan" hidden><div class="scan-line"></div></div>
+            <div class="viewer-empty" id="viewer-empty">
+              <p>Seleccione una zona y elija <b>Foto de ejemplo</b>, o suba una imagen propia.</p>
+            </div>
+          </div>
+          <div class="viewer-foot">
+            <span id="img-meta" class="muted"></span>
+            <button class="btn primary" id="btn-analyze" disabled>Analizar imagen</button>
+          </div>
+          <ol class="pipeline" id="pipeline"></ol>
+        </div>
+
+        <div class="card results" id="results">
+          <h2>Resultados</h2>
+          <p class="muted" id="results-empty">Aún no hay análisis. Los resultados aparecerán aquí para revisión antes de registrar el conteo.</p>
+          <div id="results-body" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTARIO -->
+    <section id="tab-inventario" class="tab-view" role="tabpanel" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Inventario por zona</h1>
+          <p class="muted">Conciliación entre el stock del sistema y el último conteo visual.</p>
+        </div>
+        <div class="btn-row">
+          <select id="inv-filter" aria-label="Filtrar por zona"></select>
+          <button class="btn" id="btn-csv">Exportar CSV</button>
+          <button class="btn ghost" id="btn-reset">Reiniciar demo</button>
+        </div>
+      </div>
+      <div class="card table-wrap">
+        <table class="inv">
+          <thead>
+            <tr>
+              <th>Zona</th><th>Producto</th><th class="num">Sistema</th><th class="num">Físico</th>
+              <th class="num">Diferencia</th><th class="num">Ton.</th><th>Último conteo</th><th>Estado</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="inv-body"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>Movimientos de ajuste</h2>
+        <ul class="moves" id="moves"></ul>
+      </div>
+    </section>
+
+    <!-- HISTORIAL -->
+    <section id="tab-historial" class="tab-view" role="tabpanel" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Historial de capturas</h1>
+          <p class="muted">Cada conteo conserva la imagen analizada como evidencia.</p>
+        </div>
+      </div>
+      <div class="history" id="history"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <footer class="foot muted">
+    Demo con fines ilustrativos. El reconocimiento de imágenes es simulado; productos, zonas y cifras son ficticios.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
